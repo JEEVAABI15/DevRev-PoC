@@ -1,0 +1,70 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
+}
+
+header h1 {
+  display: inline;
+}
+
+nav {
+  float: right;
+}
+
+nav a {
+  color: #fff;
+  margin-left: 1rem;
+  text-decoration: none;
+}
+
+main {
+  padding: 2rem;
+}
+
+.hero {
+  background: #ddd;
+  padding: 2rem;
+  text-align: center;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  background: #333;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+}
+
+.product-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.product {
+  background: white;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  flex: 1;
+}
+
+footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}

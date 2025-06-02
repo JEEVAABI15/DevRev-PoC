@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShopEasy - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <script
+    src="https://plug-platform.devrev.ai/static/plug.js"
+    type="text/javascript">
+  </script>
+
+</head>
+<body>
+  <header>
+    <h1>ShopEasy</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="cart.html">Cart</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Welcome to ShopEasy</h2>
+      <p>Your one-stop shop for everything!</p>
+      <a href="products.html" class="btn">Shop Now</a>
+    </section>
+
+  </main>
+
+
+  <footer>
+    <p>&copy; 2025 ShopEasy Inc.</p>
+  </footer>
+  <script>
+    // Auto-run on page load
+    window.addEventListener('load', async () => {
+      try {
+        const email = prompt("Please enter your email address:");
+        const name = prompt("Please enter your full name:");
+
+        if (!email || !name) {
+          alert("Email and Name are required to start support chat.");
+          return;
+        }
+
+        // Call your backend to get a session token
+        const response = await fetch('http://localhost:3001/api/get-devrev-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, name })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Backend error:", errorData);
+          throw new Error(errorData.error || "Failed to get session token.");
+        }
+        console.log("Response received from backend:", response);
+
+        const data = await response.json();
+        const sessionToken = data.sessionToken;
+
+        // Initialize PLuG widget with session token
+        window.plugSDK.init({
+          app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv', 
+          session_token: sessionToken
+        });
+
+        console.log(window.plugSDK);
+
+        console.log("PLuG widget initialized for", email);
+
+        var properties = {
+          "email": email,
+          "name": name,
+          "plan" : "Starter",
+          "payment_method" : "Credit Card",
+          "expiry_date" : "2024-12-12",
+          "source": "ShopEasy Home Page"
+        };
+
+        window.plugSDK.trackEvent("Shopping_link", properties)
+        
+      } catch (error) {
+        console.error("PLuG Initialization Error:", error);
+        alert("Failed to start support chat. Please try again later.");
+      }
+    });
+  </script>
+
+</body>
+</html>

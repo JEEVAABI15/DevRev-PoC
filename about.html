@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShopEasy - About</title>
+  <link rel="stylesheet" href="style.css">
+  <script
+    src="https://plug-platform.devrev.ai/static/plug.js"
+    type="text/javascript">
+  </script>
+</head>
+<body>
+  <header>
+    <h1>ShopEasy</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="cart.html">Cart</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>About Us</h2>
+    <p>ShopEasy is a demo eCommerce store created to showcase modern web design techniques with HTML, CSS, and JavaScript.</p>
+    <script>
+    window.plugSDK.init({
+      app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv',
+      disable_plug_chat_window: true,
+    });
+
+    window.plugSDK.onEvent((payload) => {
+      console.log('Plug SDK Event:', payload);
+    if (payload.type === 'ON_PLUG_WIDGET_READY') {
+        window.plugSDK.initSearchAgent();
+        window.plugSDK.toggleSearchAgent();
+    }
+    }); 
+    </script>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 ShopEasy Inc.</p>
+  </footer>
+</body>
+</html>
