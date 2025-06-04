@@ -18,6 +18,7 @@
       <a href="products.html">Products</a>
       <a href="cart.html">Cart</a>
       <a href="about.html">About</a>
+      <button onclick="logout()">Logout</button>
     </nav>
   </header>
 
@@ -35,60 +36,97 @@
     <p>&copy; 2025 ShopEasy Inc.</p>
   </footer>
   <script>
-    // Auto-run on page load
-    window.addEventListener('load', async () => {
-      try {
+    async function initializePlug() {
+      let sessionToken = localStorage.getItem('sessionToken');
+      let isLoggedIn = localStorage.getItem('isLoggedIn');
+
+      if (!sessionToken && isLoggedIn !== 'true') {
         const email = prompt("Please enter your email address:");
+        const password = prompt("Please enter your password:"); // Get password, but DON'T store it!
         const name = prompt("Please enter your full name:");
 
-        if (!email || !name) {
-          alert("Email and Name are required to start support chat.");
+        if (!email || !name || !password) {
+          alert("Email, Name and Password are required to start support chat.");
           return;
         }
 
-        // Call your backend to get a session token
         const response = await fetch('http://localhost:3001/api/get-devrev-token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, name })
+          body: JSON.stringify({ email, name }) // Don't send password to backend
         });
 
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Backend error:", errorData);
-          throw new Error(errorData.error || "Failed to get session token.");
+          alert("Failed to get session token. Please try again later.");
+          return;
         }
-        console.log("Response received from backend:", response);
 
         const data = await response.json();
-        const sessionToken = data.sessionToken;
+        sessionToken = data.sessionToken;
+        localStorage.setItem('sessionToken', sessionToken);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userEmail', email);
+      }
 
-        // Initialize PLuG widget with session token
+      if (sessionToken) {
         window.plugSDK.init({
-          app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv', 
+          app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv',
           session_token: sessionToken
         });
 
         console.log(window.plugSDK);
-
-        console.log("PLuG widget initialized for", email);
+        console.log("PLuG widget initialized.");
 
         var properties = {
-          "email": email,
-          "name": name,
-          "plan" : "Starter",
-          "payment_method" : "Credit Card",
-          "expiry_date" : "2024-12-12",
+          "plan": "Starter",
+          "payment_method": "Credit Card",
+          "expiry_date": "2024-12-12",
           "source": "ShopEasy Home Page"
         };
 
-        window.plugSDK.trackEvent("Shopping_link", properties)
-        
-      } catch (error) {
-        console.error("PLuG Initialization Error:", error);
-        alert("Failed to start support chat. Please try again later.");
+        window.plugSDK.trackEvent("Shopping_link", properties);
       }
-    });
+    }
+
+    // Auto-run on page load
+    window.addEventListener('load', initializePlug);
+
+    async function logout() {
+      const userEmail = localStorage.getItem('userEmail');
+      const userName = localStorage.getItem('userName');
+      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+      const logoutSummary = {
+        userEmail: userEmail,
+        userName: userName,
+        orderDetails: cartItems,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const response = await fetch('http://localhost:3001/api/create-devrev-issue', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(logoutSummary)
+        });
+
+        if (response.ok) {
+          console.log('Logout summary sent to backend successfully.');
+        } else {
+          console.error('Failed to send logout summary to backend.');
+        }
+      } catch (error) {
+        console.error('Error sending logout summary to backend:', error);
+      }
+
+      localStorage.clear(); // Clear all data
+      window.location.href = 'index.html'; // Redirect to home page
+    }
   </script>
 
 </body>

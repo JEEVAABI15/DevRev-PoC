@@ -17,30 +17,63 @@
       <a href="products.html">Products</a>
       <a href="cart.html">Cart</a>
       <a href="about.html">About</a>
+      <button onclick="logout()">Logout</button>
     </nav>
   </header>
 
   <main>
     <h2>About Us</h2>
     <p>ShopEasy is a demo eCommerce store created to showcase modern web design techniques with HTML, CSS, and JavaScript.</p>
-    <script>
-    window.plugSDK.init({
-      app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv',
-      disable_plug_chat_window: true,
-    });
-
-    window.plugSDK.onEvent((payload) => {
-      console.log('Plug SDK Event:', payload);
-    if (payload.type === 'ON_PLUG_WIDGET_READY') {
-        window.plugSDK.initSearchAgent();
-        window.plugSDK.toggleSearchAgent();
-    }
-    }); 
-    </script>
   </main>
 
   <footer>
     <p>&copy; 2025 ShopEasy Inc.</p>
   </footer>
+  <script>
+    async function initializePlug() {
+      let sessionToken = localStorage.getItem('sessionToken');
+
+      if (!sessionToken) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Initialize PLuG widget with session token
+      window.plugSDK.init({
+        app_id: 'DvRvStPZG9uOmNvcmU6ZHZydi1pbi0xOmRldm8vMlVLTnF5R0dkZDpwbHVnX3NldHRpbmcvMV9ffHxfXzIwMjUtMDQtMTYgMDU6MjM6MTMuNzMyMjMwODM4ICswMDAwIFVUQw==xlxendsDvRv',
+        session_token: sessionToken,
+        disable_plug_chat_window: true,
+      });
+
+      window.plugSDK.onEvent((payload) => {
+        console.log('Plug SDK Event:', payload);
+      if (payload.type === 'ON_PLUG_WIDGET_READY') {
+          window.plugSDK.initSearchAgent();
+          window.plugSDK.toggleSearchAgent();
+      }
+      });
+
+      console.log(window.plugSDK);
+      console.log("PLuG widget initialized.");
+
+            //Example of trackEvent
+            var properties = {
+            "plan" : "Starter",
+            "payment_method" : "Credit Card",
+            "expiry_date" : "2024-12-12",
+            "source": "ShopEasy About Page"
+          };
+
+          window.plugSDK.trackEvent("Shopping_link", properties)
+    }
+
+    window.addEventListener('load', initializePlug);
+
+    function logout() {
+      localStorage.removeItem('sessionToken'); // Clear session token
+      localStorage.removeItem('isLoggedIn'); // Clear the login flag
+      window.location.href = 'index.html'; // Redirect to home page
+    }
+    </script>
 </body>
 </html>
