@@ -99,12 +99,11 @@
       orderSummary.style.display = 'block';
       orderMessage.style.display = 'block';
 
-      localStorage.removeItem('cart');
       document.getElementById('cart-items').innerHTML = '';
       document.getElementById('cart-total').innerText = '0';
 
       // Send order details to backend (example)
-      const Orders = fetch('http://localhost:3001/api/submit-order', { // Replace with your actual endpoint
+      fetch('http://localhost:3001/api/submit-order', { // Replace with your actual endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -116,11 +115,11 @@
           total: cartTotal
         })
       })
-      .then(Orders => {
-        if (!Orders.ok) {
+      .then(response => {
+        if (!response.ok) {
           throw new Error('Failed to submit order');
         }
-        return Orders.json();
+        return response.json();
       })
       .then(data => {
         console.log('Order submitted successfully:', data);
@@ -131,6 +130,7 @@
         alert('Failed to submit order. Please try again.');
       });
     }
+
 
     function logout() {
       localStorage.removeItem('sessionToken'); // Clear session token
